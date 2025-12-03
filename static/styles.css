@@ -13,6 +13,11 @@
     --body-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+/* --- Global Reset for Scaling --- */
+*, *::before, *::after {
+    box-sizing: border-box; 
+}
+
 /* --- Base Body & Font Styling --- */
 body {
     background-color: var(--bg-color);
@@ -21,13 +26,20 @@ body {
     position: relative;
     transition: background-color 0.3s ease, color 0.3s ease;
     margin: 0;
-    padding-top: 88px;
+    padding-top: 100px; 
+    min-height: 100vh;
     overflow-x: hidden;
     background-image: 
         radial-gradient(rgba(0, 229, 255, 0.315) 1px, transparent 1px),
         radial-gradient(rgba(0, 229, 255, 0.315) 1px, transparent 1px);
     background-position: 0 0, 20px 20px;
     background-size: 40px 40px;
+}
+
+img, canvas {
+    max-width: 100%; 
+    height: auto; 
+    display: block; 
 }
 
 /* --- Animated Background Lights --- */
@@ -39,7 +51,7 @@ body {
     height: 100%;
     overflow: hidden;
     z-index: -1;
-    pointer-events: none; /* Allow clicking through */
+    pointer-events: none; 
 }
 
 .light {
@@ -47,7 +59,7 @@ body {
     border-radius: 50%;
     filter: blur(120px);
     opacity: 0.4;
-    transition: transform 0.5s ease-out; /* For mouse follow */
+    transition: transform 0.5s ease-out; 
 }
 
 .light-1 {
@@ -85,7 +97,8 @@ body {
 }
 
 main {
-    padding: 2rem;
+    padding: 1.5rem; /* Reduced padding */
+    width: 100%; 
     max-width: 1200px;
     margin: auto;
     position: relative;
@@ -94,13 +107,13 @@ main {
 
 nav {
     position: fixed;
-    top: 20px;
+    top: 10px; /* Moved up slightly */
     left: 20px;
     right: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.2rem 2.5rem;
+    padding: 0.4rem 2rem; /* Reduced padding */
     z-index: 100;
 }
 
@@ -140,6 +153,7 @@ nav .nav-right a:hover {
 
 /* --- Forms (Login/Register) --- */
 .form-card {
+    width: 100%;
     max-width: 400px;
     margin: 3rem auto;
     padding: 2.5rem;
@@ -156,7 +170,7 @@ nav .nav-right a:hover {
 }
 
 .form-group input {
-    width: 90%;
+    width: 100%; 
     padding: 1rem;
     background-color: var(--input-bg) !important;
     color: var(--text-color) !important;
@@ -206,11 +220,11 @@ nav .nav-right a:hover {
 /* --- Game Portal (index.html) --- */
 .header {
     text-align: center;
-    margin-bottom: 5rem;
+    margin-bottom: 3rem; /* Reduced margin */
 }
 
 .header h1 {
-    font-size: 3rem;
+    font-size: 2.5rem; /* Slightly smaller title */
     margin-bottom: 0.5rem;
     color: var(--heading-color);
 }
@@ -220,23 +234,27 @@ nav .nav-right a:hover {
 }
 .game-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Smaller min-width for cards */
+    gap: 1.5rem;
 }
 .game-card {
-    padding: 2rem;
+    padding: 1.5rem;
     text-decoration: none;
     color: var(--text-color);
     transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 .game-card h2 {
-    margin-top: 0;
+    margin-top: 1rem;
     color: var(--secondary-color);
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 .game-card p {
-    font-size: 1rem;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    line-height: 1.4;
 }
 
 .game-img {
@@ -244,31 +262,33 @@ nav .nav-right a:hover {
     height: auto;
     padding: 0.1rem;
     border-radius: 1rem;
-    box-sizing: border-box;
 }
 .game-card:hover {
     transform: translateY(-10px) scale(1.02);
     box-shadow: 0 0 30px var(--secondary-color);
     border-color: var(--secondary-color);
 }
+
 /* --- Game Pages (Snake, TicTacToe) --- */
 .game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
+    width: 100%;
 }
 .game-container h1 {
     color: var(--secondary-color);
-    font-size: 2.5rem;
+    font-size: 2rem;
+    text-align: center;
+    margin: 0;
 }
 
 /* --- Game Options --- */
 .game-options {
-    padding: 2rem;
+    padding: 1.5rem;
     width: 100%;
-    max-width: 600px;
-    box-sizing: border-box;
+    max-width: 500px;
 }
 .game-options h3 {
     margin-top: 0;
@@ -280,10 +300,11 @@ nav .nav-right a:hover {
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap; 
 }
 .options-group label {
-    padding: 0.8rem 1.2rem;
+    padding: 0.6rem 1rem;
     border: 1px solid var(--border-color-light);
     border-radius: 8px;
     cursor: pointer;
@@ -307,9 +328,10 @@ nav .nav-right a:hover {
     display: none;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
     width: 100%;
     position: relative;
+    max-width: 100%; 
 }
 .game-area.active {
     display: flex;
@@ -317,33 +339,38 @@ nav .nav-right a:hover {
 
 /* --- Snake Canvas --- */
 .score-display {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 600;
     color: var(--text-color);
 }
 #game-board {
     border: 2px solid var(--secondary-color);
     border-radius: 8px;
-    width: 550px;
-    height: 550px;
+    width: 100%;       /* Fluid width */
+    max-width: 550px;  /* Max width */
+    height: auto;
+    aspect-ratio: 1/1; /* Keeps it square */
 }
 
 /* --- Tic-Tac-Toe Board --- */
 #tictactoe-board {
     display: grid;
-    grid-template-columns: repeat(3, 150px);
-    grid-template-rows: repeat(3, 150px);
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     gap: 8px;
     background-color: var(--secondary-color);
+    width: 100%;
+    max-width: 450px; 
+    aspect-ratio: 1 / 1; 
 }
 .cell {
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    height: 100%;
     background-color: var(--bg-color);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 6rem;
+    font-size: clamp(2rem, 10vw, 6rem); 
     font-weight: bold;
     cursor: pointer;
     color: var(--text-color);
@@ -357,6 +384,7 @@ nav .nav-right a:hover {
     font-weight: 600;
     min-height: 2rem;
     color: var(--text-color);
+    text-align: center;
 }
 #reset-btn {
     padding: 0.8rem 1.5rem;
@@ -380,11 +408,14 @@ nav .nav-right a:hover {
     border: 2px solid var(--secondary-color);
     border-radius: 8px;
     background-color: var(--bg-color);
+    width: 100%;
+    max-width: 600px;
 }
 .score-container-breakout {
     display: flex;
     justify-content: space-between;
-    width: 600px;
+    width: 100%;
+    max-width: 600px;
 }
 
 /* --- Tetris Game Styles --- */
@@ -393,6 +424,7 @@ nav .nav-right a:hover {
     align-items: flex-start;
     justify-content: center;
     gap: 2rem;
+    flex-wrap: wrap; 
 }
 
 #tetris-canvas {
@@ -404,24 +436,22 @@ nav .nav-right a:hover {
 .tetris-sidecar {
     width: 200px;
     padding: 1.5rem;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
 }
 
 .tetris-sidecar h3 {
     margin: 0;
     color: var(--secondary-color);
     border-bottom: 1px solid var(--border-color-light);
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.2rem;
 }
 
 .tetris-sidecar .score-display {
     font-size: 1.8rem;
     font-weight: 600;
     color: var(--text-color);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 #next-piece-canvas {
@@ -437,14 +467,14 @@ nav .nav-right a:hover {
 /* --- 2048 Game Styles --- */
 #game-board-2048 {
     display: grid;
-    grid-template-columns: repeat(4, 100px);
-    grid-template-rows: repeat(4, 100px);
+    grid-template-columns: repeat(4, 1fr); 
+    grid-template-rows: repeat(4, 1fr);
     gap: 12px;
     padding: 12px;
     border-radius: 12px;
-    width: 460px;
-    height: 460px;
-    box-sizing: border-box;
+    width: 100%;
+    max-width: 460px; 
+    aspect-ratio: 1 / 1; 
 
     background-color: rgba(11, 15, 25, 0.6) !important;
     border: 2px solid var(--secondary-color) !important;
@@ -452,13 +482,13 @@ nav .nav-right a:hover {
 }
 
 .tile {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 100%; 
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2.5rem;
+    font-size: clamp(1rem, 5vw, 2.5rem); 
     font-weight: bold;
     transition: all 0.1s ease-in-out;
     background-color: transparent;
@@ -466,105 +496,44 @@ nav .nav-right a:hover {
     color: var(--heading-color);
 }
 
-.tile[data-value="0"] {
-    background-color: rgba(11, 15, 25, 0.6);
-    border: 2px solid rgba(0, 229, 255, 0.3);
-}
-.tile[data-value="2"] { 
-    background-color: #eee4da; 
-    color: #776e65; 
-    box-shadow: 0 0 10px #eee4da;
-}
-.tile[data-value="4"] { 
-    background-color: #ede0c8; 
-    color: #776e65; 
-    box-shadow: 0 0 10px #ede0c8;
-}
-.tile[data-value="8"] { 
-    background-color: #f2b179; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 12px #f2b179;
-    text-shadow: 0 0 8px rgba(249, 246, 242, 0.5);
-}
-.tile[data-value="16"] { 
-    background-color: #f59563; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 12px #f59563;
-    text-shadow: 0 0 8px rgba(249, 246, 242, 0.5);
-}
-.tile[data-value="32"] { 
-    background-color: #f67c5f; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 12px #f67c5f;
-    text-shadow: 0 0 8px rgba(249, 246, 242, 0.5);
-}
-.tile[data-value="64"] { 
-    background-color: #f65e3b; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 12px #f65e3b;
-    text-shadow: 0 0 8px rgba(249, 246, 242, 0.5);
-}
-.tile[data-value="128"] { 
-    background-color: #edcf72; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 15px #edcf72;
-    text-shadow: 0 0 10px rgba(249, 246, 242, 0.5);
-}
-.tile[data-value="256"] { 
-    background-color: #edcc61; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 15px #edcc61;
-    text-shadow: 0 0 10px rgba(249, 246, 242, 0.5);
-}
-.tile[data-value="512"] { 
-    background-color: #edc850; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 15px #edc850;
-    text-shadow: 0 0 10px rgba(249, 246, 242, 0.5);
-}
-.tile[data-value="1024"] { 
-    background-color: #edc53f; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 18px #edc53f;
-    text-shadow: 0 0 12px rgba(249, 246, 242, 0.5);
-}
-.tile[data-value="2048"] { 
-    background-color: #edc22e; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 20px #edc22e;
-    text-shadow: 0 0 12px rgba(249, 246, 242, 0.5);
-}
-.tile[data-value="4096"] { 
-    background-color: #3d5afe; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 20px #3d5afe;
-    text-shadow: 0 0 12px rgba(249, 246, 242, 0.5);
-}
-.tile[data-value="8192"] { 
-    background-color: #00e5ff; 
-    color: #f9f6f2; 
-    box-shadow: 0 0 20px #00e5ff;
-    text-shadow: 0 0 12px rgba(249, 246, 242, 0.5);
-}
-
+.tile[data-value="0"] { background-color: rgba(11, 15, 25, 0.6); border: 2px solid rgba(0, 229, 255, 0.3); }
+.tile[data-value="2"] { background-color: #eee4da; color: #776e65; box-shadow: 0 0 10px #eee4da; }
+.tile[data-value="4"] { background-color: #ede0c8; color: #776e65; box-shadow: 0 0 10px #ede0c8; }
+.tile[data-value="8"] { background-color: #f2b179; color: #f9f6f2; box-shadow: 0 0 12px #f2b179; }
+.tile[data-value="16"] { background-color: #f59563; color: #f9f6f2; box-shadow: 0 0 12px #f59563; }
+.tile[data-value="32"] { background-color: #f67c5f; color: #f9f6f2; box-shadow: 0 0 12px #f67c5f; }
+.tile[data-value="64"] { background-color: #f65e3b; color: #f9f6f2; box-shadow: 0 0 12px #f65e3b; }
+.tile[data-value="128"] { background-color: #edcf72; color: #f9f6f2; box-shadow: 0 0 15px #edcf72; }
+.tile[data-value="256"] { background-color: #edcc61; color: #f9f6f2; box-shadow: 0 0 15px #edcc61; }
+.tile[data-value="512"] { background-color: #edc850; color: #f9f6f2; box-shadow: 0 0 15px #edc850; }
+.tile[data-value="1024"] { background-color: #edc53f; color: #f9f6f2; box-shadow: 0 0 18px #edc53f; }
+.tile[data-value="2048"] { background-color: #edc22e; color: #f9f6f2; box-shadow: 0 0 20px #edc22e; }
+.tile[data-value="4096"] { background-color: #3d5afe; color: #f9f6f2; box-shadow: 0 0 20px #3d5afe; }
+.tile[data-value="8192"] { background-color: #00e5ff; color: #f9f6f2; box-shadow: 0 0 20px #00e5ff; }
 
 /* --- Pac-Man Game Styles --- */
 #pacman-canvas {
     border: 2px solid var(--secondary-color);
     border-radius: 8px;
     background-color: #0b0f19;
+    width: 100%;
+    max-width: 380px;
 }
 .score-container-pacman {
     display: flex;
     justify-content: space-between;
-    width: 380px;
+    width: 100%;
+    max-width: 380px;
 }
 
 /* --- Flappy Ball Game Styles --- */
 #flappyball-canvas {
     border: 2px solid var(--secondary-color);
     border-radius: 8px;
-    background-color: var(--bg-color); /* Changed from gradient to dark bg */
+    background-color: var(--bg-color); 
+    width: 100%;
+    max-width: 400px;
+    max-height: 550px;
 }
 
 /* --- Minesweeper Game Styles --- */
@@ -575,15 +544,15 @@ nav .nav-right a:hover {
     width: 100%;
     max-width: 600px;
     padding: 0.8rem 1.5rem;
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* Reduced font size */
     font-weight: 600;
     color: var(--text-color);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     box-sizing: border-box;
 }
 
 #game-status-face {
-    font-size: 2rem;
+    font-size: 1.8rem;
     cursor: pointer;
     user-select: none;
 }
@@ -598,6 +567,7 @@ nav .nav-right a:hover {
     gap: 2px;
     max-width: 100%;
     box-sizing: border-box;
+    overflow-x: auto; /* Handle overflow gracefully */
 }
 
 .mine-cell {
@@ -617,25 +587,10 @@ nav .nav-right a:hover {
     transition: background-color 0.2s;
 }
 
-.mine-cell:hover:not(.revealed) {
-    background-color: rgba(0, 229, 255, 0.2);
-}
-
-.mine-cell.revealed {
-    background-color: var(--bg-color);
-    border-color: #0b0f19;
-    cursor: default;
-}
-
-.mine-cell.flagged {
-    font-size: 1.5rem;
-    color: var(--primary-color);
-}
-
-.mine-cell.mine {
-    background-color: var(--danger-color);
-    font-size: 1.5rem;
-}
+.mine-cell:hover:not(.revealed) { background-color: rgba(0, 229, 255, 0.2); }
+.mine-cell.revealed { background-color: var(--bg-color); border-color: #0b0f19; cursor: default; }
+.mine-cell.flagged { font-size: 1.5rem; color: var(--primary-color); }
+.mine-cell.mine { background-color: var(--danger-color); font-size: 1.5rem; }
 
 /* Number colors */
 .mine-cell[data-mines="1"] { color: #00e5ff; }
@@ -648,21 +603,17 @@ nav .nav-right a:hover {
 .mine-cell[data-mines="8"] { color: #e0e0e0; }
 
 #game-over-message, #game-over-message-2048 {
-    /* Apply glass effect */
     background-color: var(--card-bg) !important;
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border: 1px solid var(--border-color-light) !important;
     border-radius: 1rem;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    
-    /* Layout */
-    padding: 2.5rem;
+    padding: 2rem;
     width: 300px;
     box-sizing: border-box;
     z-index: 110;
@@ -744,16 +695,15 @@ footer a {
   border-radius: 8px;
 }
 
-
 /* --- Mobile Warning Overlay --- */
 #mobile-warning {
-    display: none; /* Hidden by default */
+    display: none; 
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--bg-color); /* Matches your dark app background */
+    background-color: var(--bg-color); 
     z-index: 99999;
     justify-content: center;
     align-items: center;
@@ -770,14 +720,61 @@ footer a {
     gap: 1rem;
 }
 
-/* Show only on small devices (Tablets and Phones) */
-@media screen and (max-width: 1024px) {
+/* --- RESPONSIVE MEDIA QUERIES --- */
+
+/* 1. Only show Mobile Warning on VERY small screens (Phones/Tablets) */
+/* Reduced from 1024px to 768px so laptops don't see it */
+@media screen and (max-width: 768px) {
     #mobile-warning {
         display: flex;
     }
-    
-    /* Hide the rest of the app to prevent interaction behind the warning */
     nav, main, footer, .background-lights {
         display: none !important;
+    }
+}
+
+/* 2. Special Scaling for Short Screens (Laptops at 125% Zoom) */
+/* If height is < 900px OR width is < 1200px, shrink things */
+@media screen and (max-height: 900px), screen and (max-width: 1200px) {
+    body {
+        padding-top: 60px; /* Shrink top padding */
+    }
+    
+    .header h1 { font-size: 2rem; }
+    .header { margin-bottom: 2rem; }
+
+    /* Force Game Boards to shrink vertically */
+    #game-board { /* Snake */
+        max-width: 450px; 
+    }
+    #game-board-2048 {
+        max-width: 380px; 
+    }
+    #tictactoe-board {
+        max-width: 350px;
+    }
+    #breakout-canvas {
+        max-width: 500px;
+    }
+    .score-container-breakout {
+        max-width: 500px;
+    }
+    #flappyball-canvas {
+        max-width: 350px;
+    }
+    #pacman-canvas {
+        max-width: 340px;
+    }
+    .score-container-pacman {
+        max-width: 340px;
+    }
+    
+    /* Adjust Tetris */
+    #tetris-canvas {
+        height: 500px; /* Reduce visual height */
+        width: 250px;
+    }
+    .tetris-sidecar {
+        padding: 0.5rem;
     }
 }

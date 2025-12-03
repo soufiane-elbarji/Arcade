@@ -35,16 +35,25 @@ def after_request(response):
 @app.route('/setup_db')
 def setup_db():
     try:
-        # Create Users Table
+        # 1. Create Users Table (if not exists)
         db.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
                 username TEXT NOT NULL UNIQUE,
                 hash TEXT NOT NULL,
-                total_exp INTEGER NOT NULL DEFAULT 0
+                total_exp INTEGER NOT NULL DEFAULT 0,
+                access_count INTEGER NOT NULL DEFAULT 0
             );
         """)
-        # Create Scores Table
+        
+        # 2. Migration: Try to add 'access_count' column if it's missing from an old DB
+        # This allows you to update without deleting project.db
+        try:
+            db.execute("ALTER TABLE users ADD COLUMN access_count INTEGER DEFAULT 0")
+        except Exception:
+            pass # Column likely already exists, ignore error
+
+        # 3. Create Scores Table
         db.execute("""
             CREATE TABLE IF NOT EXISTS scores (
                 id SERIAL PRIMARY KEY,
@@ -55,7 +64,7 @@ def setup_db():
                 FOREIGN KEY(user_id) REFERENCES users(id)
             );
         """)
-        return "SUCCESS: Tables Created! Go to /register now."
+        return "SUCCESS: Database Updated! Tables created and 'access_count' column added."
     except Exception as e:
         return f"ERROR: {e}"
 
@@ -81,12 +90,19 @@ def login():
         elif not request.form.get("password"):
             return render_template("login.html", error="Must provide password")
 
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        # Force lowercase
+        username = request.form.get("username").lower()
+
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
 
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
             return render_template("login.html", error="Invalid username and/or password")
 
         session["user_id"] = rows[0]["id"]
+        
+        # Increment visit count
+        db.execute("UPDATE users SET access_count = access_count + 1 WHERE id = ?", rows[0]["id"])
+        
         return redirect("/")
     else:
         return render_template("login.html")
@@ -99,7 +115,8 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form.get("username")
+        # Force lowercase
+        username = request.form.get("username").lower() if request.form.get("username") else None
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
 
@@ -113,10 +130,10 @@ def register():
         if len(rows) > 0:
             return render_template("register.html", error="Username already taken")
 
-        # Insert new user
+        # Insert new user with 1 visit
         hash_pw = generate_password_hash(password)
         try:
-            db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", username, hash_pw)
+            db.execute("INSERT INTO users (username, hash, access_count) VALUES (?, ?, 1)", username, hash_pw)
         except Exception:
             return render_template("register.html", error="Error creating user")
 
@@ -126,6 +143,23 @@ def register():
         return redirect("/")
     else:
         return render_template("register.html")
+
+# --- ADMIN ROUTE ---
+@app.route("/admin")
+@login_required
+def admin():
+    # 1. Get current user
+    user_rows = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
+    if not user_rows:
+        return redirect("/")
+
+    # 2. Check if admin (lowercase)
+    if user_rows[0]["username"] != "admin":
+        return render_template("index.html", error="Admins Only") # Or redirect
+        
+    # 3. Get stats
+    all_users = db.execute("SELECT * FROM users ORDER BY access_count DESC")
+    return render_template("admin.html", users=all_users)
 
 # --- GAME ROUTES ---
 @app.route("/game/snake")
@@ -177,7 +211,6 @@ def submit_score():
 
     # Calculate EXP
     exp_gained = 0
-    # (Note: Kept logic simple for brevity, ensure your logic matches your game scoring)
     if game_name == 'snake': exp_gained = int(score)
     elif game_name == 'tictactoe': exp_gained = int(score) * 50
     elif game_name == '2048': exp_gained = int(score / 10)

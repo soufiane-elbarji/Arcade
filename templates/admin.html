@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="header">
+    <h1>Admin Panel</h1>
+    <p>User Activity Monitor</p>
+</div>
+
+<div class="leaderboard-container" style="max-width: 800px;">
+    <div class="leaderboard-card glass-effect">
+        <h2 style="display: flex; justify-content: space-between;">
+            <span>User List</span>
+            <span style="font-size: 1rem; color: var(--text-color);">Total Users: {{ users|length }}</span>
+        </h2>
+        
+        <!-- Table Header -->
+        <div style="display: grid; grid-template-columns: 1fr 2fr 1fr 1fr; padding: 10px; border-bottom: 2px solid var(--secondary-color); font-weight: bold; color: var(--secondary-color);">
+            <span>ID</span>
+            <span>Username</span>
+            <span>EXP</span>
+            <span>Visits</span>
+        </div>
+
+        <div class="user-list" style="max-height: 500px; overflow-y: auto;">
+            {% for user in users %}
+                <div style="display: grid; grid-template-columns: 1fr 2fr 1fr 1fr; padding: 12px 10px; border-bottom: 1px solid var(--border-color-light); align-items: center;">
+                    <!-- Note: accessing via dot notation usually works in Jinja, but user['key'] is the explicit dict access -->
+                    <span style="opacity: 0.7;">#{{ user.id }}</span>
+                    <span class="username" style="font-weight: 600;">{{ user.username }}</span>
+                    <span style="color: var(--primary-color);">{{ user.total_exp }}</span>
+                    <span style="color: var(--secondary-color); font-weight: bold;">{{ user.access_count }}</span>
+                </div>
+            {% else %}
+                <div style="padding: 2rem; text-align: center;">No users found.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom Scrollbar for the user list */
+    .user-list::-webkit-scrollbar {
+        width: 8px;
+    }
+    .user-list::-webkit-scrollbar-thumb {
+        background-color: var(--secondary-color);
+        border-radius: 4px;
+    }
+    .user-list::-webkit-scrollbar-track {
+        background-color: rgba(0,0,0,0.2);
+    }
+</style>
+{% endblock %}

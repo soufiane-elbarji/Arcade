@@ -14,17 +14,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Game Constants ---
     const canvasWidth = 400;
-    const canvasHeight = 600;
+    const canvasHeight = 550;
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
 
     // --- Game State Variables ---
     let ball, pipes, score, gameActive, gameLoop;
-    let gravity = 0.5;
-    let bounce = -9; // Renamed from lift
+    let gravity = 0.7;
+    let bounce = -15; // Renamed from lift
     let pipeGap = 150;
     let pipeSpeed = 3;
-    let pipeSpawnTimer = 150; // Controls how often pipes spawn
+    let pipeSpawnTimer = 100; // Controls how often pipes spawn
 
     // --- Ball Object ---
     const ballProps = {
@@ -216,9 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Pipe collision
         for (let pipe of pipes) {
             // Check if ball is within the x-range of the pipe
-            if (ball.x + ball.radius > pipe.x && ball.x - ball.radius < pipe.x + pipe.width) {
+            if (ball.x + ball.radius >= pipe.x && ball.x - ball.radius <= pipe.x + pipe.width) {
                 // Check for collision with top pipe OR bottom pipe
-                if (pipe.isTop && ball.y - ball.radius < pipe.height) {
+                if (pipe.isTop && ball.y - ball.radius <= pipe.height) {
                     endGame();
                     return;
                 }
