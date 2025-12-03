@@ -29,13 +29,6 @@ else:
     db = SQL("sqlite:///project.db")
     
 
-@app.teardown_appcontext
-def close_connection(exception):
-    """Close the database connection at the end of the request."""
-    db = getattr(g, '_database', None)
-    if db is not None:
-        db.close()
-
 # --- After Request Handler to Disable Caching ---
 @app.after_request
 def after_request(response):
