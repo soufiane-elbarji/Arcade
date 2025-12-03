@@ -31,11 +31,12 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-# --- SECRET SETUP ROUTE (Run this once!) ---
+# --- SECRET SETUP ROUTE (Run this to Fix/Update DB) ---
 @app.route('/setup_db')
 def setup_db():
     try:
         # 1. Create Users Table (if not exists)
+        # Added 'access_count' column definition here for new installs
         db.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -46,14 +47,7 @@ def setup_db():
             );
         """)
         
-        # 2. Migration: Try to add 'access_count' column if it's missing from an old DB
-        # This allows you to update without deleting project.db
-        try:
-            db.execute("ALTER TABLE users ADD COLUMN access_count INTEGER DEFAULT 0")
-        except Exception:
-            pass # Column likely already exists, ignore error
-
-        # 3. Create Scores Table
+        # 2. Create Scores Table (if not exists)
         db.execute("""
             CREATE TABLE IF NOT EXISTS scores (
                 id SERIAL PRIMARY KEY,
@@ -64,7 +58,16 @@ def setup_db():
                 FOREIGN KEY(user_id) REFERENCES users(id)
             );
         """)
-        return "SUCCESS: Database Updated! Tables created and 'access_count' column added."
+
+        # 3. MIGRATION: Try to add 'access_count' column to existing databases
+        # We use a try/except block because if the column already exists, 
+        # Postgres will throw an error. We want to ignore that error.
+        try:
+            db.execute("ALTER TABLE users ADD COLUMN access_count INTEGER DEFAULT 0")
+            return "SUCCESS: Database Updated! 'access_count' column was added."
+        except Exception:
+            return "SUCCESS: Database Validated! (Tables exist, 'access_count' column likely already there)."
+
     except Exception as e:
         return f"ERROR: {e}"
 
@@ -90,7 +93,7 @@ def login():
         elif not request.form.get("password"):
             return render_template("login.html", error="Must provide password")
 
-        # Force lowercase
+        # 1. Force lowercase
         username = request.form.get("username").lower()
 
         rows = db.execute("SELECT * FROM users WHERE username = ?", username)
@@ -100,9 +103,13 @@ def login():
 
         session["user_id"] = rows[0]["id"]
         
-        # Increment visit count
-        db.execute("UPDATE users SET access_count = access_count + 1 WHERE id = ?", rows[0]["id"])
-        
+        # 2. Increment Access Count
+        # We use try/except in case the column hasn't been added yet (safety check)
+        try:
+            db.execute("UPDATE users SET access_count = access_count + 1 WHERE id = ?", rows[0]["id"])
+        except Exception:
+            pass # Old DB version, ignore count update
+
         return redirect("/")
     else:
         return render_template("login.html")
@@ -115,7 +122,7 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        # Force lowercase
+        # 1. Force lowercase
         username = request.form.get("username").lower() if request.form.get("username") else None
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
@@ -130,12 +137,18 @@ def register():
         if len(rows) > 0:
             return render_template("register.html", error="Username already taken")
 
-        # Insert new user with 1 visit
+        # Insert new user
         hash_pw = generate_password_hash(password)
         try:
+            # 2. Set initial access_count to 1
+            # Note: If this fails (old DB), it falls back to the EXCEPT block
             db.execute("INSERT INTO users (username, hash, access_count) VALUES (?, ?, 1)", username, hash_pw)
         except Exception:
-            return render_template("register.html", error="Error creating user")
+            # Fallback for old databases without access_count column
+            try:
+                db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", username, hash_pw)
+            except:
+                return render_template("register.html", error="Error creating user")
 
         # Log in
         rows = db.execute("SELECT * FROM users WHERE username = ?", username)
@@ -154,11 +167,17 @@ def admin():
         return redirect("/")
 
     # 2. Check if admin (lowercase)
+    # You MUST register a user named "admin" to see this page
     if user_rows[0]["username"] != "admin":
-        return render_template("index.html", error="Admins Only") # Or redirect
+        return render_template("index.html") # Or redirect to home
         
-    # 3. Get stats
-    all_users = db.execute("SELECT * FROM users ORDER BY access_count DESC")
+    # 3. Get stats (Handle case where access_count might be missing)
+    try:
+        all_users = db.execute("SELECT * FROM users ORDER BY access_count DESC")
+    except Exception:
+        # Fallback if column missing
+        all_users = db.execute("SELECT * FROM users")
+        
     return render_template("admin.html", users=all_users)
 
 # --- GAME ROUTES ---
