@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    <div class="form-card glass-effect" style="text-align: center;">
+        <h2 style="color: var(--danger-color);">Error {{ top }}</h2>
+        <p style="font-size: 1.2rem; color: var(--text-color);">{{ bottom }}</p>
+        <a href="javascript:history.back()" class="btn" style="width: 200px; margin-top: 1rem; text-decoration: none;">Go Back</a>
+    </div>
+{% endblock %}

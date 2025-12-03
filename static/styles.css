@@ -1,0 +1,745 @@
+/* --- Root Color Variables */
+:root {
+    --bg-color: #0b0f19; 
+    --card-bg: rgba(29, 38, 59, 0.6);
+    --border-color-light: rgba(255, 255, 255, 0.15);
+    --text-color: #e0e0e0;
+    --heading-color: #ffffff;
+    --primary-color: #3d5afe;
+    --secondary-color: #00e5ff;
+    --danger-color: #dc3545;
+    --input-bg: rgba(37, 37, 37, 0.6);
+    --input-border: rgba(85, 85, 85, 0.6);
+    --body-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* --- Base Body & Font Styling --- */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--body-font);
+    position: relative;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0;
+    padding-top: 100px;
+    overflow-x: hidden;
+    background-image: 
+        radial-gradient(rgba(0, 229, 255, 0.315) 1px, transparent 1px),
+        radial-gradient(rgba(0, 229, 255, 0.315) 1px, transparent 1px);
+    background-position: 0 0, 20px 20px;
+    background-size: 40px 40px;
+}
+
+/* --- Animated Background Lights --- */
+.background-lights {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none; /* Allow clicking through */
+}
+
+.light {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.4;
+    transition: transform 0.5s ease-out; /* For mouse follow */
+}
+
+.light-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--primary-color);
+    top: 10%;
+    left: 10%;
+}
+
+.light-2 {
+    width: 450px;
+    height: 450px;
+    background: var(--secondary-color);
+    bottom: 5%;
+    right: 15%;
+}
+
+.light-3 {
+    width: 300px;
+    height: 300px;
+    background: var(--primary-color);
+    top: 60%;
+    left: 40%;
+}
+
+/* --- Glassmorphism Card & Navbar --- */
+.glass-effect {
+    background-color: var(--card-bg) !important;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid var(--border-color-light) !important;
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: auto;
+    position: relative;
+    z-index: 2;
+}
+
+nav {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2.5rem;
+    z-index: 100;
+}
+
+nav .logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--heading-color);
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+
+nav .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+nav .nav-right a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+nav .nav-right a:hover {
+    color: var(--secondary-color);
+}
+
+#user-info {
+    font-weight: 600;
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 1px solid var(--border-color-light);
+}
+
+/* --- Forms (Login/Register) --- */
+.form-card {
+    max-width: 400px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    text-align: center;
+}
+
+.form-card h2 {
+    margin-top: 0;
+    color: var(--secondary-color);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group input {
+    width: 90%;
+    padding: 1rem;
+    background-color: var(--input-bg) !important;
+    color: var(--text-color) !important;
+    border: 2px solid var(--input-border) !important;
+    border-radius: 10px !important;
+    font-size: 1rem;
+}
+
+.form-group input::placeholder {
+    color: var(--text-color);
+    opacity: 0.5;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+.btn {
+    padding: 1rem 2rem;
+    width: 100%;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    background: var(--secondary-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 20px var(--secondary-color);
+}
+
+.error {
+    background: var(--danger-color);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+/* --- Game Portal (index.html) --- */
+.header {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.header h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: var(--heading-color);
+}
+.header p {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+}
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+.game-card {
+    padding: 2rem;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.game-card h2 {
+    margin-top: 0;
+    color: var(--secondary-color);
+    font-size: 1.8rem;
+}
+.game-card p {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.game-img {
+    width: 100%;
+    height: auto;
+    padding: 0.1rem;
+    border-radius: 1rem;
+    box-sizing: border-box;
+}
+.game-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 0 30px var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+/* --- Game Pages (Snake, TicTacToe) --- */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+.game-container h1 {
+    color: var(--secondary-color);
+    font-size: 2.5rem;
+}
+
+/* --- Game Options --- */
+.game-options {
+    padding: 2rem;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
+.game-options h3 {
+    margin-top: 0;
+    color: var(--secondary-color);
+    border-bottom: 1px solid var(--border-color-light);
+    padding-bottom: 0.5rem;
+}
+.options-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.options-group label {
+    padding: 0.8rem 1.2rem;
+    border: 1px solid var(--border-color-light);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.options-group input[type="radio"] {
+    display: none;
+}
+.options-group input[type="radio"]:checked + label {
+    background: var(--secondary-color);
+    color: var(--bg-color);
+    font-weight: 600;
+    border-color: var(--secondary-color);
+}
+.options-group label:hover {
+    background: rgba(128, 128, 128, 0.2);
+}
+
+/* --- Game Area --- */
+.game-area {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    position: relative;
+}
+.game-area.active {
+    display: flex;
+}
+
+/* --- Snake Canvas --- */
+.score-display {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+#game-board {
+    border: 2px solid var(--secondary-color);
+    border-radius: 8px;
+    width: 600px;
+    height: 600px;
+}
+
+/* --- Tic-Tac-Toe Board --- */
+#tictactoe-board {
+    display: grid;
+    grid-template-columns: repeat(3, 150px);
+    grid-template-rows: repeat(3, 150px);
+    gap: 8px;
+    background-color: var(--secondary-color);
+}
+.cell {
+    width: 150px;
+    height: 150px;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 6rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: background-color 0.2s;
+}
+.cell:hover {
+    background-color: #1a2233;
+}
+.game-status {
+    font-size: 1.5rem;
+    font-weight: 600;
+    min-height: 2rem;
+    color: var(--text-color);
+}
+#reset-btn {
+    padding: 0.8rem 1.5rem;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+}
+#reset-btn:hover {
+    background: var(--secondary-color);
+    color: var(--bg-color);
+}
+
+/* --- Breakout Game Styles --- */
+#breakout-canvas {
+    border: 2px solid var(--secondary-color);
+    border-radius: 8px;
+    background-color: var(--bg-color);
+}
+.score-container-breakout {
+    display: flex;
+    justify-content: space-between;
+    width: 600px;
+}
+
+/* --- Tetris Game Styles --- */
+.tetris-layout {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2rem;
+}
+
+#tetris-canvas {
+    border: 2px solid var(--secondary-color);
+    border-radius: 8px;
+    background-color: var(--bg-color);
+}
+
+.tetris-sidecar {
+    width: 200px;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tetris-sidecar h3 {
+    margin: 0;
+    color: var(--secondary-color);
+    border-bottom: 1px solid var(--border-color-light);
+    padding-bottom: 0.5rem;
+}
+
+.tetris-sidecar .score-display {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+#next-piece-canvas {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color-light);
+    border-radius: 8px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+}
+
+
+/* --- 2048 Game Styles --- */
+#game-board-2048 {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: repeat(4, 100px);
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    width: 460px;
+    height: 460px;
+    box-sizing: border-box;
+
+    background-color: rgba(11, 15, 25, 0.6) !important;
+    border: 2px solid var(--secondary-color) !important;
+    box-shadow: 0 0 20px var(--secondary-color);
+}
+
+.tile {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    transition: all 0.1s ease-in-out;
+    background-color: transparent;
+    border: 2px solid transparent;
+    color: var(--heading-color);
+}
+
+.tile[data-value="0"] {
+    background-color: rgba(11, 15, 25, 0.6);
+    border: 2px solid rgba(0, 229, 255, 0.3);
+}
+.tile[data-value="2"] { 
+    background-color: #eee4da; 
+    color: #776e65; 
+    box-shadow: 0 0 10px #eee4da;
+}
+.tile[data-value="4"] { 
+    background-color: #ede0c8; 
+    color: #776e65; 
+    box-shadow: 0 0 10px #ede0c8;
+}
+.tile[data-value="8"] { 
+    background-color: #f2b179; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 12px #f2b179;
+    text-shadow: 0 0 8px rgba(249, 246, 242, 0.5);
+}
+.tile[data-value="16"] { 
+    background-color: #f59563; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 12px #f59563;
+    text-shadow: 0 0 8px rgba(249, 246, 242, 0.5);
+}
+.tile[data-value="32"] { 
+    background-color: #f67c5f; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 12px #f67c5f;
+    text-shadow: 0 0 8px rgba(249, 246, 242, 0.5);
+}
+.tile[data-value="64"] { 
+    background-color: #f65e3b; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 12px #f65e3b;
+    text-shadow: 0 0 8px rgba(249, 246, 242, 0.5);
+}
+.tile[data-value="128"] { 
+    background-color: #edcf72; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 15px #edcf72;
+    text-shadow: 0 0 10px rgba(249, 246, 242, 0.5);
+}
+.tile[data-value="256"] { 
+    background-color: #edcc61; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 15px #edcc61;
+    text-shadow: 0 0 10px rgba(249, 246, 242, 0.5);
+}
+.tile[data-value="512"] { 
+    background-color: #edc850; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 15px #edc850;
+    text-shadow: 0 0 10px rgba(249, 246, 242, 0.5);
+}
+.tile[data-value="1024"] { 
+    background-color: #edc53f; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 18px #edc53f;
+    text-shadow: 0 0 12px rgba(249, 246, 242, 0.5);
+}
+.tile[data-value="2048"] { 
+    background-color: #edc22e; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 20px #edc22e;
+    text-shadow: 0 0 12px rgba(249, 246, 242, 0.5);
+}
+.tile[data-value="4096"] { 
+    background-color: #3d5afe; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 20px #3d5afe;
+    text-shadow: 0 0 12px rgba(249, 246, 242, 0.5);
+}
+.tile[data-value="8192"] { 
+    background-color: #00e5ff; 
+    color: #f9f6f2; 
+    box-shadow: 0 0 20px #00e5ff;
+    text-shadow: 0 0 12px rgba(249, 246, 242, 0.5);
+}
+
+
+/* --- Pac-Man Game Styles --- */
+#pacman-canvas {
+    border: 2px solid var(--secondary-color);
+    border-radius: 8px;
+    background-color: #0b0f19;
+}
+.score-container-pacman {
+    display: flex;
+    justify-content: space-between;
+    width: 380px;
+}
+
+/* --- Flappy Ball Game Styles --- */
+#flappyball-canvas {
+    border: 2px solid var(--secondary-color);
+    border-radius: 8px;
+    background-color: var(--bg-color); /* Changed from gradient to dark bg */
+}
+
+/* --- Minesweeper Game Styles --- */
+.minesweeper-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
+
+#game-status-face {
+    font-size: 2rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+#minesweeper-board {
+    display: grid;
+    border: 2px solid var(--secondary-color);
+    border-radius: 8px;
+    background-color: var(--bg-color);
+    box-shadow: 0 0 20px var(--secondary-color);
+    padding: 5px;
+    gap: 2px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.mine-cell {
+    width: 30px;
+    height: 30px;
+    background-color: #1a2233;
+    border: 1px solid var(--border-color-light);
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+.mine-cell:hover:not(.revealed) {
+    background-color: rgba(0, 229, 255, 0.2);
+}
+
+.mine-cell.revealed {
+    background-color: var(--bg-color);
+    border-color: #0b0f19;
+    cursor: default;
+}
+
+.mine-cell.flagged {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.mine-cell.mine {
+    background-color: var(--danger-color);
+    font-size: 1.5rem;
+}
+
+/* Number colors */
+.mine-cell[data-mines="1"] { color: #00e5ff; }
+.mine-cell[data-mines="2"] { color: #198754; }
+.mine-cell[data-mines="3"] { color: #f2b179; }
+.mine-cell[data-mines="4"] { color: #f59563; }
+.mine-cell[data-mines="5"] { color: #f65e3b; }
+.mine-cell[data-mines="6"] { color: #dc3545; }
+.mine-cell[data-mines="7"] { color: #ffffff; }
+.mine-cell[data-mines="8"] { color: #e0e0e0; }
+
+#game-over-message, #game-over-message-2048 {
+    /* Apply glass effect */
+    background-color: var(--card-bg) !important;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid var(--border-color-light) !important;
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* Layout */
+    padding: 2.5rem;
+    width: 300px;
+    box-sizing: border-box;
+    z-index: 110;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.leaderboard-container {
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.leaderboard-card {
+    padding: 2rem;
+}
+
+.leaderboard-card h2 {
+    margin-top: 0;
+    color: var(--secondary-color);
+    border-bottom: 2px solid var(--border-color-light);
+    padding-bottom: 0.5rem;
+}
+
+.leaderboard-card ol {
+    list-style: none;
+    padding-left: 0;
+}
+
+.leaderboard-card li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+.leaderboard-card li:last-child {
+    border-bottom: none;
+}
+
+.leaderboard-card li .username {
+    font-weight: 600;
+}
+
+.leaderboard-card li .score {
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    margin: 2rem 0;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+}
+
+footer a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+.side-scroller::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+}
+
+.side-scroller::-webkit-scrollbar-thumb {
+  background-color: var(--secondary-color);
+  border-radius: 8px;
+}
+
+.side-scroller::-webkit-scrollbar-track {
+  background-color: var(--heading-color);
+  border-radius: 8px;
+}

@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="game-container">
+    <h1>Tetris</h1>
+    
+    <!-- Game Options -->
+    <div id="game-options" class="game-options glass-effect">
+        <h3 style="text-align: center;">Ready to play?</h3>
+        <img src="/static/assets/move4.png" alt="How To Play" class="game-img">
+        <button id="start-game-btn" class="btn">Start Game</button>
+    </div>
+    
+    <!-- Game Area (hidden by default) -->
+    <div id="game-area" class="game-area tetris-layout">
+        
+        <!-- Main Game Board -->
+        <canvas id="tetris-canvas" width="300" height="600"></canvas>
+
+        <!-- Side Panel for Info -->
+        <div class="tetris-sidecar glass-effect">
+            <h3>Score</h3>
+            <div id="score" class="score-display">0</div>
+            
+            <h3>Lines</h3>
+            <div id="lines" class="score-display">0</div>
+            
+            <h3>Level</h3>
+            <div id="level" class="score-display">1</div>
+
+            <h3>Next</h3>
+            <canvas id="next-piece-canvas" width="120" height="120"></canvas>
+        </div>
+
+        <!-- Game Over Message -->
+        <div id="game-over-message" class="game-status" style="display: none; flex-direction: column; gap: 1rem; align-items: center;">
+            <span id="game-over-text">Game Over!</span>
+            <button id="reset-btn" class="btn" style="width: 200px;">Play Again</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/tetris.js"></script>
+{% endblock %}

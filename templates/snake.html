@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="game-container">
+    <h1>Snake</h1>
+
+    <!-- New Game Options -->
+    <div id="game-options" class="game-options glass-effect">
+        <h3>Select Difficulty</h3>
+        <div class="options-group">
+            <input type="radio" id="easy" name="difficulty" value="150" checked>
+            <label for="easy">Easy</label>
+
+            <input type="radio" id="normal" name="difficulty" value="100">
+            <label for="normal">Normal</label>
+
+            <input type="radio" id="hard" name="difficulty" value="60">
+            <label for="hard">Hard</label>
+        </div>
+        <div>
+            <h3>How to Play</h3>
+            <img src="/static/assets/move2.png" alt="How To Play" class="game-img">
+        </div>
+        <button id="start-game-btn" class="btn">Start Game</button>
+    </div>
+
+    <!-- Game Area (hidden by default) -->
+    <div id="game-area" class="game-area">
+        <div class="score-display">Score: <span id="score">0</span></div>
+        <!-- Larger canvas -->
+        <canvas id="game-board" width="600" height="600"></canvas>
+
+        <!-- New Game Over Message -->
+        <div id="game-over-message" class="game-status" style="display: none;">
+            <span id="game-over-text" style="font-size: 1.8rem;">Game Over!</span>
+            <span id="final-score-text" style="font-size: 1.2rem; color: var(--text-color); margin-top: -0.5rem;"></span>
+            <button id="reset-btn-snake" class="btn" style="width: 200px; margin-top: 1rem;">Play Again</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/snake.js"></script>
+{% endblock %}
+

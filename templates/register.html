@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block main %}
+    <form class="form-card glass-effect" action="/register" method="post">
+        <h2>Register</h2>
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+        <div class="form-group">
+            <input autocomplete="off" autofocus name="username" placeholder="Username" type="text">
+        </div>
+        <div class="form-group">
+            <input name="password" placeholder="Password" type="password">
+        </div>
+        <div class="form-group">
+            <input name="confirmation" placeholder="Confirm Password" type="password">
+        </div>
+        <button class="btn" type="submit">Register</button>
+    </form>
+{% endblock %}

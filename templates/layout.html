@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade</title>
+    <link rel="icon" href="/static/assets/LOGO.ico" type="image/x-ico">
+    <link href="/static/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Animated background lights -->
+    <div class="background-lights">
+        <div class="light light-1"></div>
+        <div class="light light-2"></div>
+        <div class="light light-3"></div>
+    </div>
+
+    <nav class="glass-effect">
+        <div style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+            <a href="/"><img src="/static/assets/LOGO.png" alt="LOGO" height="50px"></a>
+            <a class="logo" href="/">ARCADE <span style="font-size: small;">V.1</span></a>
+        </div>
+        <div class="nav-right">
+            {% if session.user_id %}
+                <span id="user-info" style="display: flex; flex-direction: row; align-items: center; gap: 5px;">
+                    <strong>{{ username }}</strong> | EXP: {{ exp }}
+                    <img src="/static/assets/STAR.png" alt="EXPs-Star" width="20px">
+                </span>
+                <a href="/leaderboard">Leaderboard</a>
+                <a href="/logout">Log Out</a>
+            {% else %}
+                <a href="/login">Log In</a>
+                <a href="/register">Register</a>
+            {% endif %}
+            
+        </div>
+    </nav>
+
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+
+    <script src="/static/script.js" defer></script>
+
+    <footer>
+        <p>Developed With ❤️ by <a href="https://github.com/soufiane-elbarji">Soufiane El Barji</a></p>
+    </footer>
+</body>
+</html>
+

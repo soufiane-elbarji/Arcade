@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="header">
+    <h1>Leaderboards</h1>
+    <p>See who reigns supreme.</p>
+</div>
+
+<div class="leaderboard-container">
+    <div class="leaderboard-card glass-effect">
+        <h2>Top 10 Overall (EXP)</h2>
+        <ol>
+            {% for user in top_users %}
+                <li>
+                    <span class="username">{{ user.username }}</span>
+                    <span class="score">{{ user.total_exp }} EXP</span>
+                </li>
+            {% else %}
+                <li>No players yet!</li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+
+{% endblock %}
+

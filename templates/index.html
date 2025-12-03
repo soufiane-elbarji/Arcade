@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    <div class="header">
+        <h1>Welcome, {{ username }}</h1>
+        <p>Choose your challenge.</p>
+    </div>
+
+    <div class="game-grid">
+        <a href="/game/snake" class="game-card glass-effect">
+            <img src="/static/assets/Snake.png" alt="Sanke" class="game-img">
+            <h2>Snake</h2>
+            <p>The classic reptile adventure.</p>
+        </a>
+        <a href="/game/tictactoe" class="game-card glass-effect">
+            <img src="/static/assets/Tic-Tac-Toe.png" alt="Sanke" class="game-img">
+            <h2>Tic-Tac-Toe</h2>
+            <p>Can you beat the bot?</p>
+        </a>
+        <a href="/game/2048" class="game-card glass-effect">
+            <img src="/static/assets/2048.png" alt="Sanke" class="game-img">
+            <h2>2048</h2>
+            <p>Join the tiles and get to 2048.</p>
+        </a>
+        <a href="/game/breakout" class="game-card glass-effect">
+            <img src="/static/assets/Breakout.png" alt="Sanke" class="game-img">
+            <h2>Breakout</h2>
+            <p>Clear the bricks and don't drop the ball.</p>
+        </a>
+        <a href="/game/tetris" class="game-card glass-effect">
+            <img src="/static/assets/Tetris.png" alt="Sanke" class="game-img">
+            <h2>Tetris</h2>
+            <p>The classic line-clearing puzzle.</p>
+        </a>
+        <a href="/game/pacman" class="game-card glass-effect">
+            <img src="/static/assets/Pac-Man.png" alt="Sanke" class="game-img">
+            <h2>Pac-Man</h2>
+            <p>Waka waka! Eat the pellets and avoid the ghosts.</p>
+        </a>
+        <a href="/game/flappyball" class="game-card glass-effect">
+            <img src="/static/assets/Flappy-Ball.png" alt="Flappy Ball" class="game-img">
+            <h2>Flappy Ball</h2>
+            <p>Bounce your way through the pipes.</p>
+        </a>
+        <a href="/game/minesweeper" class="game-card glass-effect">
+            <img src="/static/assets/Minesweeper.png" alt="Minesweeper" class="game-img">
+            <h2>Minesweeper</h2>
+            <p>Don't click the bombs!</p>
+        </a>
+    </div>
+{% endblock %}
+

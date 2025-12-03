@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="game-container">
+    <h1>Breakout</h1>
+    
+    <!-- Game Options -->
+    <div id="game-options" class="game-options glass-effect">
+        <h3 style="text-align: center;">Ready to play?</h3>
+        <img src="/static/assets/move3.png" alt="How To Play" class="game-img">
+        <button id="start-game-btn" class="btn">Start Game</button>
+    </div>
+    
+    <!-- Game Area (hidden by default) -->
+    <div id="game-area" class="game-area">
+        <!-- Canvas for the game -->
+        <canvas id="breakout-canvas" width="600" height="500"></canvas>
+        
+        <!-- Score and Lives display -->
+        <div class="score-container-breakout">
+            <div class="score-display">Score: <span id="score">0</span></div>
+            <div class="score-display">Lives: <span id="lives">3</span></div>
+        </div>
+
+        <div id="game-over-message" class="game-status" style="display: none; flex-direction: column; gap: 1rem; align-items: center;">
+            <span id="game-over-text">Game Over!</span>
+            <button id="reset-btn" class="btn" style="width: 200px;">Play Again</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/breakout.js"></script>
+{% endblock %}

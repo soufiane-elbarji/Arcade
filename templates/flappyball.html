@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="game-container">
+    <h1>Flappy Ball</h1>
+    
+    <!-- Game Options -->
+    <div id="game-options" class="game-options glass-effect">
+        <h3>How to Play</h3>
+        <img src="/static/assets/move5.png" alt="How To Play" class="game-img">
+        <button id="start-game-btn" class="btn">Start Game</button>
+    </div>
+    
+    <!-- Game Area (hidden by default) -->
+    <div id="game-area" class="game-area">
+        
+        <!-- Score display -->
+        <div class="score-display">Score: <span id="score">0</span></div>
+
+        <!-- Canvas for the game -->
+        <canvas id="flappyball-canvas"></canvas> <!-- Dimensions set in JS -->
+        
+        <!-- Game Over Message -->
+        <div id="game-over-message" class="game-status" style="display: none; flex-direction: column; gap: 1rem; align-items: center; position: absolute; top: 40%;">
+            <span id="game-over-text" style="font-size: 1.8rem;">Game Over!</span>
+            <span id="final-score-text" style="font-size: 1.2rem; color: var(--text-color); margin-top: -0.5rem;"></span>
+            <button id="reset-btn" class="btn" style="width: 200px; margin-top: 1rem;">Play Again</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/flappyball.js"></script>
+{% endblock %}

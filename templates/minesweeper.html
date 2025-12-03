@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="game-container">
+    <h1>Minesweeper</h1>
+    
+    <!-- Game Options -->
+    <div id="game-options" class="game-options glass-effect">
+        <h3>Select Difficulty</h3>
+        <div class="options-group">
+            <input type="radio" id="easy" name="difficulty" value="easy" checked>
+            <label for="easy">Easy (9x9)</label>
+
+            <input type="radio" id="medium" name="difficulty" value="medium">
+            <label for="medium">Medium (16x16)</label>
+
+            <input type="radio" id="hard" name="difficulty" value="hard">
+            <label for="hard">Hard (20x20)</label>
+        </div>
+        <h3>How to Play</h3>
+        <img src="/static/assets/move6.png" alt="How To Play" class="game-img">
+        <button id="start-game-btn" class="btn">Start Game</button>
+    </div>
+    
+    <!-- Game Area (hidden by default) -->
+    <div id="game-area" class="game-area">
+        
+        <!-- Game Stats -->
+        <div class="minesweeper-stats glass-effect">
+            <div>Mines: <span id="mine-count">0</span></div>
+            <div id="game-status-face">🙂</div>
+            <div>Time: <span id="timer">0</span></div>
+        </div>
+
+        <!-- Game Board -->
+        <div id="minesweeper-board"></div>
+        
+        <!-- Game Over Message -->
+        <div id="game-over-message" class="game-status" style="display: none; flex-direction: column; gap: 1rem; align-items: center; position: absolute; top: 40%;">
+            <span id="game-over-text" style="font-size: 1.8rem;">Game Over!</span>
+            <button id="reset-btn" class="btn" style="width: 200px; margin-top: 1rem;">Play Again</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/minesweeper.js"></script>
+{% endblock %}
