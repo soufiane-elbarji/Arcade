@@ -31,33 +31,6 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-# --- SECRET SETUP ROUTE (Run this to Fix/Update DB) ---
-@app.route("/init-db-secret")
-def init_db():
-    # 1. Create the users table (using SERIAL instead of AUTOINCREMENT for Postgres)
-    db.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            username VARCHAR(255) NOT NULL UNIQUE,
-            hash VARCHAR(255) NOT NULL,
-            total_exp INTEGER NOT NULL DEFAULT 0
-        );
-    """)
-
-    # 2. Create the scores table
-    db.execute("""
-        CREATE TABLE IF NOT EXISTS scores (
-            id SERIAL PRIMARY KEY,
-            user_id INTEGER NOT NULL,
-            game_name VARCHAR(255) NOT NULL,
-            score INTEGER NOT NULL,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY(user_id) REFERENCES users(id)
-        );
-    """)
-    
-    return "Database tables successfully created in Aiven!"
-
 # --- ROUTES ---
 
 @app.route("/")
