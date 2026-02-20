@@ -33,6 +33,11 @@ def after_request(response):
 
 # --- ROUTES ---
 
+@app.route("/fix-db")  
+def fix_db():
+    db.execute("ALTER TABLE users ADD COLUMN access_count INTEGER DEFAULT 0;")
+    return "access_count column added successfully!"
+
 @app.route("/")
 @login_required
 def index():
