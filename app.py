@@ -32,44 +32,31 @@ def after_request(response):
     return response
 
 # --- SECRET SETUP ROUTE (Run this to Fix/Update DB) ---
-@app.route('/setup_db')
-def setup_db():
-    try:
-        # 1. Create Users Table (if not exists)
-        # Added 'access_count' column definition here for new installs
-        db.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                id SERIAL PRIMARY KEY,
-                username TEXT NOT NULL UNIQUE,
-                hash TEXT NOT NULL,
-                total_exp INTEGER NOT NULL DEFAULT 0,
-                access_count INTEGER NOT NULL DEFAULT 0
-            );
-        """)
-        
-        # 2. Create Scores Table (if not exists)
-        db.execute("""
-            CREATE TABLE IF NOT EXISTS scores (
-                id SERIAL PRIMARY KEY,
-                user_id INTEGER NOT NULL,
-                game_name TEXT NOT NULL,
-                score INTEGER NOT NULL,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY(user_id) REFERENCES users(id)
-            );
-        """)
+@app.route("/init-db-secret")
+def init_db():
+    # 1. Create the users table (using SERIAL instead of AUTOINCREMENT for Postgres)
+    db.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            username VARCHAR(255) NOT NULL UNIQUE,
+            hash VARCHAR(255) NOT NULL,
+            total_exp INTEGER NOT NULL DEFAULT 0
+        );
+    """)
 
-        # 3. MIGRATION: Try to add 'access_count' column to existing databases
-        # We use a try/except block because if the column already exists, 
-        # Postgres will throw an error. We want to ignore that error.
-        try:
-            db.execute("ALTER TABLE users ADD COLUMN access_count INTEGER DEFAULT 0")
-            return "SUCCESS: Database Updated! 'access_count' column was added."
-        except Exception:
-            return "SUCCESS: Database Validated! (Tables exist, 'access_count' column likely already there)."
-
-    except Exception as e:
-        return f"ERROR: {e}"
+    # 2. Create the scores table
+    db.execute("""
+        CREATE TABLE IF NOT EXISTS scores (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            game_name VARCHAR(255) NOT NULL,
+            score INTEGER NOT NULL,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        );
+    """)
+    
+    return "Database tables successfully created in Aiven!"
 
 # --- ROUTES ---
 
