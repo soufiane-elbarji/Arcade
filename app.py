@@ -33,6 +33,23 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+
+@app.route("/fix-db-exp")
+def fix_db_exp():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        # This forces PostgreSQL to add the missing column
+        cur.execute("ALTER TABLE users ADD COLUMN total_exp INTEGER DEFAULT 0;")
+        conn.commit()
+        return "total_exp column added successfully! You can now use the app."
+    except Exception as e:
+        conn.rollback()
+        return f"Database error: {e}"
+    finally:
+        cur.close()
+        conn.close()
+
 # --- ROUTES ---
 
 @app.route("/")
