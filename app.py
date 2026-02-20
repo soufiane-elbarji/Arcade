@@ -22,15 +22,7 @@ if uri and uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://")
 
 def get_db_connection():
-    # Parse the URI for psycopg2 to connect directly to Aiven
-    result = urlparse(uri)
-    conn = psycopg2.connect(
-        database=result.path[1:],
-        user=result.username,
-        password=result.password,
-        host=result.hostname,
-        port=result.port
-    )
+    conn = psycopg2.connect(uri)
     return conn
 
 # --- No-Cache Helper ---
