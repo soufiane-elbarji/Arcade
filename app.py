@@ -1,5 +1,7 @@
 import os
-from cs50 import SQL
+import psycopg2
+import psycopg2.extras
+from urllib.parse import urlparse
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -16,12 +18,20 @@ Session(app)
 
 # --- CONFIG: Database ---
 uri = os.environ.get("DATABASE_URL")
-if uri:
-    if uri.startswith("postgres://"):
-        uri = uri.replace("postgres://", "postgresql://")
-    db = SQL(uri)
-else:
-    db = SQL("sqlite:///project.db")
+if uri and uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://")
+
+def get_db_connection():
+    # Parse the URI for psycopg2 to connect directly to Aiven
+    result = urlparse(uri)
+    conn = psycopg2.connect(
+        database=result.path[1:],
+        user=result.username,
+        password=result.password,
+        host=result.hostname,
+        port=result.port
+    )
+    return conn
 
 # --- No-Cache Helper ---
 @app.after_request
@@ -33,21 +43,23 @@ def after_request(response):
 
 # --- ROUTES ---
 
-@app.route("/fix-db")  
-def fix_db():
-    db.execute("ALTER TABLE users ADD COLUMN access_count INTEGER DEFAULT 0;")
-    return "access_count column added successfully!"
-
 @app.route("/")
 @login_required
 def index():
-    user_data = db.execute("SELECT username, total_exp FROM users WHERE id = ?", session["user_id"])
-    
-    if not user_data:
-        session.clear()
-        return redirect("/login")
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    try:
+        cur.execute("SELECT username, total_exp FROM users WHERE id = %s", (session["user_id"],))
+        user_data = cur.fetchall()
         
-    return render_template("index.html", username=user_data[0]["username"], exp=user_data[0]["total_exp"])
+        if not user_data:
+            session.clear()
+            return redirect("/login")
+            
+        return render_template("index.html", username=user_data[0]["username"], exp=user_data[0]["total_exp"])
+    finally:
+        cur.close()
+        conn.close()
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -58,24 +70,31 @@ def login():
         elif not request.form.get("password"):
             return render_template("login.html", error="Must provide password")
 
-        # 1. Force lowercase
         username = request.form.get("username").lower()
 
-        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
-
-        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
-            return render_template("login.html", error="Invalid username and/or password")
-
-        session["user_id"] = rows[0]["id"]
+        conn = get_db_connection()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         
-        # 2. Increment Access Count
-        # We use try/except in case the column hasn't been added yet (safety check)
         try:
-            db.execute("UPDATE users SET access_count = access_count + 1 WHERE id = ?", rows[0]["id"])
-        except Exception:
-            pass # Old DB version, ignore count update
+            cur.execute("SELECT * FROM users WHERE username = %s", (username,))
+            rows = cur.fetchall()
 
-        return redirect("/")
+            if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+                return render_template("login.html", error="Invalid username and/or password")
+
+            session["user_id"] = rows[0]["id"]
+            
+            # Increment Access Count
+            cur.execute("UPDATE users SET access_count = access_count + 1 WHERE id = %s", (rows[0]["id"],))
+            conn.commit()
+
+            return redirect("/")
+        except Exception as e:
+            conn.rollback()
+            return render_template("login.html", error="An error occurred.")
+        finally:
+            cur.close()
+            conn.close()
     else:
         return render_template("login.html")
 
@@ -87,7 +106,6 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        # 1. Force lowercase
         username = request.form.get("username").lower() if request.form.get("username") else None
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
@@ -97,28 +115,33 @@ def register():
         if password != confirmation:
             return render_template("register.html", error="Passwords do not match")
 
-        # Check existing user
-        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
-        if len(rows) > 0:
-            return render_template("register.html", error="Username already taken")
+        conn = get_db_connection()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-        # Insert new user
-        hash_pw = generate_password_hash(password)
         try:
-            # 2. Set initial access_count to 1
-            # Note: If this fails (old DB), it falls back to the EXCEPT block
-            db.execute("INSERT INTO users (username, hash, access_count) VALUES (?, ?, 1)", username, hash_pw)
-        except Exception:
-            # Fallback for old databases without access_count column
-            try:
-                db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", username, hash_pw)
-            except:
-                return render_template("register.html", error="Error creating user")
+            # Check existing user
+            cur.execute("SELECT * FROM users WHERE username = %s", (username,))
+            rows = cur.fetchall()
+            if len(rows) > 0:
+                return render_template("register.html", error="Username already taken")
 
-        # Log in
-        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
-        session["user_id"] = rows[0]["id"]
-        return redirect("/")
+            # Insert new user
+            hash_pw = generate_password_hash(password)
+            cur.execute("INSERT INTO users (username, hash, access_count) VALUES (%s, %s, 1)", (username, hash_pw))
+            conn.commit()
+
+            # Log in
+            cur.execute("SELECT * FROM users WHERE username = %s", (username,))
+            rows = cur.fetchall()
+            session["user_id"] = rows[0]["id"]
+            
+            return redirect("/")
+        except Exception as e:
+            conn.rollback()
+            return render_template("register.html", error="Error creating user.")
+        finally:
+            cur.close()
+            conn.close()
     else:
         return render_template("register.html")
 
@@ -126,24 +149,25 @@ def register():
 @app.route("/admin")
 @login_required
 def admin():
-    # 1. Get current user
-    user_rows = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
-    if not user_rows:
-        return redirect("/")
-
-    # 2. Check if admin (lowercase)
-    # You MUST register a user named "admin" to see this page
-    if user_rows[0]["username"] != "admin":
-        return render_template("index.html") # Or redirect to home
-        
-    # 3. Get stats (Handle case where access_count might be missing)
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     try:
-        all_users = db.execute("SELECT * FROM users ORDER BY access_count DESC")
-    except Exception:
-        # Fallback if column missing
-        all_users = db.execute("SELECT * FROM users")
+        cur.execute("SELECT username FROM users WHERE id = %s", (session["user_id"],))
+        user_rows = cur.fetchall()
         
-    return render_template("admin.html", users=all_users)
+        if not user_rows:
+            return redirect("/")
+
+        if user_rows[0]["username"] != "admin":
+            return render_template("index.html")
+            
+        cur.execute("SELECT * FROM users ORDER BY access_count DESC")
+        all_users = cur.fetchall()
+            
+        return render_template("admin.html", users=all_users)
+    finally:
+        cur.close()
+        conn.close()
 
 # --- GAME ROUTES ---
 @app.route("/game/snake")
@@ -190,27 +214,47 @@ def submit_score():
     if not game_name or score is None:
         return ({"success": False, "error": "Invalid data"}), 400
 
-    # Insert score
-    db.execute("INSERT INTO scores (user_id, game_name, score) VALUES (?, ?, ?)", user_id, game_name, score)
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-    # Calculate EXP
-    exp_gained = 0
-    if game_name == 'snake': exp_gained = int(score)
-    elif game_name == 'tictactoe': exp_gained = int(score) * 50
-    elif game_name == '2048': exp_gained = int(score / 10)
-    elif game_name == 'breakout': exp_gained = int(score / 2)
-    elif game_name == 'tetris': exp_gained = int(score / 10)
-    elif game_name == 'pacman': exp_gained = int(score / 5)
-    elif game_name == 'flappyball': exp_gained = int(score) * 5
-    elif game_name == 'minesweeper': exp_gained = int(score)
+    try:
+        # Insert score
+        cur.execute("INSERT INTO scores (user_id, game_name, score) VALUES (%s, %s, %s)", (user_id, game_name, score))
 
-    db.execute("UPDATE users SET total_exp = total_exp + ? WHERE id = ?", exp_gained, user_id)
-    
-    user_data = db.execute("SELECT username, total_exp FROM users WHERE id = ?", user_id)
-    return ({"success": True, "username": user_data[0]["username"], "new_exp": user_data[0]["total_exp"]}), 200
+        # Calculate EXP
+        exp_gained = 0
+        if game_name == 'snake': exp_gained = int(score)
+        elif game_name == 'tictactoe': exp_gained = int(score) * 50
+        elif game_name == '2048': exp_gained = int(score / 10)
+        elif game_name == 'breakout': exp_gained = int(score / 2)
+        elif game_name == 'tetris': exp_gained = int(score / 10)
+        elif game_name == 'pacman': exp_gained = int(score / 5)
+        elif game_name == 'flappyball': exp_gained = int(score) * 5
+        elif game_name == 'minesweeper': exp_gained = int(score)
+
+        cur.execute("UPDATE users SET total_exp = total_exp + %s WHERE id = %s", (exp_gained, user_id))
+        conn.commit()
+        
+        cur.execute("SELECT username, total_exp FROM users WHERE id = %s", (user_id,))
+        user_data = cur.fetchall()
+        
+        return ({"success": True, "username": user_data[0]["username"], "new_exp": user_data[0]["total_exp"]}), 200
+    except Exception as e:
+        conn.rollback()
+        return ({"success": False, "error": "Database error"}), 500
+    finally:
+        cur.close()
+        conn.close()
 
 @app.route("/leaderboard")
 @login_required
 def leaderboard():
-    top_users = db.execute("SELECT username, total_exp FROM users ORDER BY total_exp DESC LIMIT 10")
-    return render_template("leaderboard.html", top_users=top_users)
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    try:
+        cur.execute("SELECT username, total_exp FROM users ORDER BY total_exp DESC LIMIT 10")
+        top_users = cur.fetchall()
+        return render_template("leaderboard.html", top_users=top_users)
+    finally:
+        cur.close()
+        conn.close()

@@ -3,4 +3,3 @@ Flask-Session
 werkzeug
 gunicorn
 psycopg2-binary
-cs50
