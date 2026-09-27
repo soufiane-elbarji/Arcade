@@ -13,8 +13,8 @@ app = Flask(__name__)
 # --- CONFIG: Security & Sessions ---
 app.secret_key = os.environ.get("SECRET_KEY", "dev_key_for_testing")
 app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 # --- CONFIG: Database ---
 uri = os.environ.get("DATABASE_URL")
